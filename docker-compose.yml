@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: platform-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: platform_user
+      POSTGRES_PASSWORD: platform_password
+      POSTGRES_DB: platform_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - platform-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: platform-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - platform-network
+
+volumes:
+  postgres_data:
+
+networks:
+  platform-network:
+    driver: bridge
