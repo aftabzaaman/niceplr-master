@@ -4,7 +4,18 @@ import React from "react";
 import Image from "next/image";
 import { ArrowDownRight, Sparkles } from "lucide-react";
 
-const BENTO_ITEMS = [
+interface BentoItem {
+  title: string;
+  description?: string;
+  image?: string;
+  className?: string;
+  imageClassName?: string;
+  hasImage?: boolean;
+  isSatisfaction?: boolean;
+  isFocal?: boolean;
+}
+
+const BENTO_ITEMS: BentoItem[] = [
   {
     title: "Ready For Print",
     description: "Your book is formatted and polished to be print-ready, designed to look and feel like a true best-seller.",
@@ -88,7 +99,7 @@ export function BentoGridSection() {
                     </div>
                   )}
 
-                  {item.hasImage && (
+                  {item.hasImage && item.image && (
                     <div className="relative mt-6 flex-1 w-full min-h-[120px] rounded-2xl overflow-hidden bg-white/5 border border-white/5">
                       <Image
                         src={item.image}
