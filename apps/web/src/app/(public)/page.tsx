@@ -87,7 +87,7 @@ export default function Home() {
         <FAQSection />
 
         {/* CTA Section */}
-        <section className="py-24">
+        <section>
           <CTACard />
         </section>
       </main>
