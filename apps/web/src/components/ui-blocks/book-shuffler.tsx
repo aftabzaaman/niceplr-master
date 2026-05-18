@@ -38,7 +38,7 @@ export function BookShuffler() {
 
   return (
     <div
-      className="relative w-full aspect-[5/8] max-w-[340px] sm:max-w-[380px] md:max-w-[420px] mx-auto select-none"
+      className="relative w-full aspect-[5/8] max-w-[256px] sm:max-w-[285px] md:max-w-[315px] mx-auto select-none"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}
