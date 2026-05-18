@@ -71,37 +71,37 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
             {products.map((product) => (
               <div key={product.title} className="glass rounded-xl overflow-hidden group hover:glass-glow transition-all duration-500">
                 <div className="aspect-[3/4] bg-gradient-to-br from-primary/10 to-accent/5 relative overflow-hidden">
-                  <div className="absolute top-4 left-4 z-10 glass px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary">
+                  <div className="absolute top-3 left-3 z-10 bg-white px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest text-primary shadow-sm">
                     Digital Product
                   </div>
                   <Image
                     src={product.image}
                     alt={product.title}
                     fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2 min-h-[3.5rem]">
+                <div className="p-4">
+                  <h3 className="text-sm font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem]">
                     {product.title}
                   </h3>
-                  <div className="flex items-center gap-1 mb-6">
-                    <Star className="w-4 h-4 fill-primary text-primary" />
-                    <Star className="w-4 h-4 fill-primary text-primary" />
-                    <Star className="w-4 h-4 fill-primary text-primary" />
-                    <Star className="w-4 h-4 fill-primary text-primary" />
-                    <Star className="w-4 h-4 text-primary" />
-                    <span className="text-xs text-muted-foreground ml-2">({product.reviews} reviews)</span>
+                  <div className="flex items-center gap-0.5 mb-3">
+                    <Star className="w-3 h-3 fill-primary text-primary" />
+                    <Star className="w-3 h-3 fill-primary text-primary" />
+                    <Star className="w-3 h-3 fill-primary text-primary" />
+                    <Star className="w-3 h-3 fill-primary text-primary" />
+                    <Star className="w-3 h-3 text-primary" />
+                    <span className="text-[10px] text-muted-foreground ml-1.5">({product.reviews})</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-black">{product.price}</span>
-                    <Button size="icon" variant="ghost" className="rounded-full h-12 w-12 glass hover:bg-primary hover:text-white group-hover:animate-bounce">
-                      <Download className="w-5 h-5" />
+                    <span className="text-lg font-black">{product.price}</span>
+                    <Button size="icon" variant="ghost" className="rounded-full h-9 w-9 glass hover:bg-primary hover:text-white group-hover:animate-bounce">
+                      <Download className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
