@@ -47,42 +47,24 @@ export function CTACard({ transparent = false }: { transparent?: boolean }) {
           </p>
         </div>
 
-        {/* Product Images (Overlapping) */}
-        <div className="absolute -bottom-10 left-10 w-48 md:w-64 hidden lg:block transform hover:-translate-y-4 transition-transform duration-500">
-          <Image 
-            src="/assets/cta/cta-1.png" 
-            alt="The Ad Profit Machine" 
-            width={300} 
-            height={400} 
+        {/* Product Images (Overlapping) — sunken ~25% more, angled on all breakpoints */}
+        <div className="absolute -bottom-[50px] left-2 sm:left-4 md:left-8 lg:left-10 w-24 sm:w-32 md:w-48 lg:w-64 transform hover:-translate-y-4 transition-transform duration-500 z-10">
+          <Image
+            src="/assets/cta/cta-1.png"
+            alt="The Ad Profit Machine"
+            width={300}
+            height={400}
             className="rounded-xl shadow-2xl rotate-[-5deg]"
           />
         </div>
-        <div className="absolute -bottom-10 right-10 w-48 md:w-64 hidden lg:block transform hover:-translate-y-4 transition-transform duration-500">
-          <Image 
-            src="/assets/cta/cta-2.png" 
-            alt="The $10K Sale Engine" 
-            width={300} 
-            height={400} 
+        <div className="absolute -bottom-[50px] right-2 sm:right-4 md:right-8 lg:right-10 w-24 sm:w-32 md:w-48 lg:w-64 transform hover:-translate-y-4 transition-transform duration-500 z-10">
+          <Image
+            src="/assets/cta/cta-2.png"
+            alt="The $10K Sale Engine"
+            width={300}
+            height={400}
             className="rounded-xl shadow-2xl rotate-[5deg]"
           />
-        </div>
-
-        {/* Mobile Product Images (Displayed normally) */}
-        <div className="flex lg:hidden gap-4 mt-12 overflow-x-auto pb-0 w-full justify-center -mb-2">
-            <Image 
-              src="/assets/cta/cta-1.png" 
-              alt="The Ad Profit Machine" 
-              width={150} 
-              height={200} 
-              className="rounded-lg shadow-lg flex-shrink-0"
-            />
-            <Image 
-              src="/assets/cta/cta-2.png" 
-              alt="The $10K Sale Engine" 
-              width={150} 
-              height={200} 
-              className="rounded-lg shadow-lg flex-shrink-0"
-            />
         </div>
       </div>
     </section>
