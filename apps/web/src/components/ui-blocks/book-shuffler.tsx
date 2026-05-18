@@ -18,8 +18,27 @@ const COVERS: BookCover[] = [
   { src: "/assets/hero/books/6.png", alt: "How to Start a Blog" },
 ];
 
-const INTERVAL_MS = 2600;
-const VISIBLE_DEPTH = 4;
+const INTERVAL_MS = 2800;
+const VISIBLE_COUNT = 5;
+
+type Slot = {
+  x: number;
+  y: number;
+  rotate: number;
+  scale: number;
+  opacity: number;
+  zIndex: number;
+};
+
+// 5 visible slots arranged left → right in an arc.
+// Slot 2 is the focal center (top of stack).
+const SLOTS: Slot[] = [
+  { x: -150, y: 32, rotate: -30, scale: 0.78, opacity: 0.78, zIndex: 2 },
+  { x: -78,  y: 12, rotate: -15, scale: 0.9,  opacity: 0.95, zIndex: 4 },
+  { x: 0,    y: 0,  rotate: 0,   scale: 1.0,  opacity: 1.0,  zIndex: 6 },
+  { x: 78,   y: 12, rotate: 15,  scale: 0.9,  opacity: 0.95, zIndex: 5 },
+  { x: 150,  y: 32, rotate: 30,  scale: 0.78, opacity: 0.78, zIndex: 3 },
+];
 
 export function BookShuffler() {
   const [order, setOrder] = useState<number[]>(() => COVERS.map((_, i) => i));
@@ -28,87 +47,68 @@ export function BookShuffler() {
   useEffect(() => {
     if (paused) return;
     const id = window.setInterval(() => {
-      setOrder((prev) => {
-        const [first, ...rest] = prev;
-        return [...rest, first];
-      });
+      setOrder((prev) => [...prev.slice(1), prev[0]]);
     }, INTERVAL_MS);
     return () => window.clearInterval(id);
   }, [paused]);
 
+  const visible = order.slice(0, VISIBLE_COUNT);
+
   return (
     <div
-      className="relative w-full aspect-[5/8] max-w-[256px] sm:max-w-[285px] md:max-w-[315px] mx-auto select-none"
+      className="relative w-full aspect-[5/4] max-w-[380px] sm:max-w-[430px] md:max-w-[480px] mx-auto select-none"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}
       onTouchEnd={() => setPaused(false)}
       aria-label="Featured digital products"
     >
-      <AnimatePresence initial={false}>
-        {order.map((coverIdx, stackPos) => {
+      <AnimatePresence mode="popLayout" initial={false}>
+        {visible.map((coverIdx, slotIdx) => {
+          const slot = SLOTS[slotIdx];
           const cover = COVERS[coverIdx];
-          const isTop = stackPos === 0;
-          const depth = Math.min(stackPos, VISIBLE_DEPTH);
-          const hidden = stackPos > VISIBLE_DEPTH;
-
-          const scale = 1 - depth * 0.06;
-          const y = depth * 18;
-          const x = depth * 10;
-          const rotate = depth * -2;
-          const opacity = hidden ? 0 : 1 - depth * 0.12;
-          const blur = depth === 0 ? 0 : Math.min(depth * 0.6, 2);
-          const zIndex = COVERS.length - stackPos;
 
           return (
             <motion.div
               key={coverIdx}
-              className="absolute inset-0"
-              style={{ zIndex }}
-              initial={{
-                opacity: 0,
-                scale: scale - 0.04,
-                x: x + 40,
-                y: y + 20,
-                rotate: rotate - 4,
+              className="absolute top-1/2 left-1/2"
+              style={{
+                width: "44%",
+                aspectRatio: "5 / 8",
+                marginLeft: "-22%",
+                marginTop: "-35.2%",
+                zIndex: slot.zIndex,
               }}
+              initial={{ x: 230, y: 50, rotate: 42, scale: 0.7, opacity: 0 }}
               animate={{
-                opacity,
-                scale,
-                x,
-                y,
-                rotate,
-                filter: `blur(${blur}px)`,
+                x: slot.x,
+                y: slot.y,
+                rotate: slot.rotate,
+                scale: slot.scale,
+                opacity: slot.opacity,
               }}
               exit={{
+                x: -230,
+                y: 50,
+                rotate: -42,
+                scale: 0.7,
                 opacity: 0,
-                x: -180,
-                y: -40,
-                rotate: -18,
-                scale: scale * 0.9,
-                transition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] },
+                transition: { duration: 0.7, ease: [0.4, 0, 0.2, 1] },
               }}
               transition={{
                 type: "spring",
-                stiffness: 160,
+                stiffness: 100,
                 damping: 22,
-                mass: 0.9,
+                mass: 1,
               }}
             >
-              <div
-                className="relative w-full h-full rounded-2xl overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.65)] ring-1 ring-white/10"
-                style={{
-                  boxShadow: isTop
-                    ? "0 35px 80px -20px rgba(59,130,246,0.35), 0 25px 60px -15px rgba(0,0,0,0.6)"
-                    : undefined,
-                }}
-              >
+              <div className="relative w-full h-full rounded-xl overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.65)] ring-1 ring-white/10">
                 <Image
                   src={cover.src}
                   alt={cover.alt}
                   fill
-                  priority={stackPos < 2}
-                  sizes="(max-width: 768px) 340px, 420px"
+                  priority={slotIdx < 2}
+                  sizes="(max-width: 768px) 180px, 220px"
                   className="object-cover"
                 />
               </div>
