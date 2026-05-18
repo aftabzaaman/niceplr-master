@@ -50,8 +50,8 @@ export function CTACard({ transparent = false }: { transparent?: boolean }) {
         {/* Product Images (Overlapping) */}
         <div className="absolute -bottom-10 left-10 w-48 md:w-64 hidden lg:block transform hover:-translate-y-4 transition-transform duration-500">
           <Image 
-            src="/assets/cta/image%2058.png" 
-            alt="Mindful Mornings" 
+            src="/assets/cta/cta-1.png" 
+            alt="The Ad Profit Machine" 
             width={300} 
             height={400} 
             className="rounded-xl shadow-2xl rotate-[-5deg]"
@@ -59,8 +59,8 @@ export function CTACard({ transparent = false }: { transparent?: boolean }) {
         </div>
         <div className="absolute -bottom-10 right-10 w-48 md:w-64 hidden lg:block transform hover:-translate-y-4 transition-transform duration-500">
           <Image 
-            src="/assets/cta/image%2059.png" 
-            alt="Mindfulness for Creators" 
+            src="/assets/cta/cta-2.png" 
+            alt="The $10K Sale Engine" 
             width={300} 
             height={400} 
             className="rounded-xl shadow-2xl rotate-[5deg]"
@@ -70,15 +70,15 @@ export function CTACard({ transparent = false }: { transparent?: boolean }) {
         {/* Mobile Product Images (Displayed normally) */}
         <div className="flex lg:hidden gap-4 mt-12 overflow-x-auto pb-0 w-full justify-center -mb-2">
             <Image 
-              src="/assets/cta/image%2058.png" 
-              alt="Mindful Mornings" 
+              src="/assets/cta/cta-1.png" 
+              alt="The Ad Profit Machine" 
               width={150} 
               height={200} 
               className="rounded-lg shadow-lg flex-shrink-0"
             />
             <Image 
-              src="/assets/cta/image%2059.png" 
-              alt="Mindfulness for Creators" 
+              src="/assets/cta/cta-2.png" 
+              alt="The $10K Sale Engine" 
               width={150} 
               height={200} 
               className="rounded-lg shadow-lg flex-shrink-0"
