@@ -1,9 +1,9 @@
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { 
-  ShoppingBag, 
-  Search, 
-  Download, 
-  Star
+import {
+  Search,
+  Download,
+  Star,
 } from "lucide-react";
 import { MainHero } from "@/components/ui-blocks/main-hero";
 import { CTACard } from "@/components/ui-blocks/cta-card";
@@ -12,6 +12,40 @@ import { InfoCards } from "@/components/ui-blocks/info-cards";
 import { BlogSection } from "@/components/ui-blocks/blog-section";
 import { FAQSection } from "@/components/ui-blocks/faq-section";
 import { TestimonialSection } from "@/components/ui-blocks/testimonial-section";
+
+type Product = {
+  title: string;
+  image: string;
+  price: string;
+  reviews: number;
+};
+
+const products: Product[] = [
+  { title: "The YouTube Free Traffic System", image: "/assets/products/01.png", price: "$37", reviews: 142 },
+  { title: "The Viral Prompt Pack", image: "/assets/products/02.png", price: "$47", reviews: 218 },
+  { title: "The 7-Figure Funnel Vault", image: "/assets/products/03.png", price: "$97", reviews: 96 },
+  { title: "The $10K Sale Engine", image: "/assets/products/04.png", price: "$67", reviews: 73 },
+  { title: "The AI Cash Machine", image: "/assets/products/05.png", price: "$77", reviews: 184 },
+  { title: "High-Converting Funnel Formulas", image: "/assets/products/06.png", price: "$47", reviews: 129 },
+  { title: "The Words That Print Money", image: "/assets/products/07.png", price: "$37", reviews: 88 },
+  { title: "The Ad Profit Machine", image: "/assets/products/08.png", price: "$57", reviews: 64 },
+  { title: "Part-Time Millionaire Marketing Vault", image: "/assets/products/09.png", price: "Free", reviews: 312 },
+  { title: "Successful Digital Strategies 2023", image: "/assets/products/10.png", price: "$27", reviews: 51 },
+  { title: "Successful Digital Strategies 2022", image: "/assets/products/11.png", price: "$27", reviews: 47 },
+  { title: "Funnel Strategic Guide", image: "/assets/products/12.png", price: "Free", reviews: 205 },
+  { title: "AI Email Revenue Secrets", image: "/assets/products/13.png", price: "$37", reviews: 112 },
+  { title: "The AI Content Cash System", image: "/assets/products/14.png", price: "$47", reviews: 76 },
+  { title: "Fast-Selling Mini Offers Collection", image: "/assets/products/15.png", price: "$27", reviews: 38 },
+  { title: "Digital Product Profit System", image: "/assets/products/16.png", price: "Free", reviews: 156 },
+  { title: "The 6-Figure AI Course Formula", image: "/assets/products/17.png", price: "$97", reviews: 89 },
+  { title: "The Faceless Viral Reels Vault", image: "/assets/products/18.png", price: "$57", reviews: 134 },
+  { title: "The Viral Prompt Vault", image: "/assets/products/19.png", price: "$47", reviews: 67 },
+  { title: "The Ultimate Digital Product Vault", image: "/assets/products/20.png", price: "$147", reviews: 41 },
+  { title: "Digital Product Profit Key", image: "/assets/products/21.jpeg", price: "$37", reviews: 58 },
+  { title: "The Part-Time Profits Pack", image: "/assets/products/22.png", price: "$47", reviews: 92 },
+  { title: "The Fast Track Revenue Bundle", image: "/assets/products/23.png", price: "$67", reviews: 33 },
+  { title: "AI Email Revenue Secrets — Email Kit", image: "/assets/products/24.png", price: "Free", reviews: 178 },
+];
 
 export default function Home() {
   return (
@@ -38,28 +72,34 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
-              <div key={i} className="glass rounded-xl overflow-hidden group hover:glass-glow transition-all duration-500">
-                <div className="aspect-[4/3] bg-gradient-to-br from-primary/10 to-accent/5 relative">
-                  <div className="absolute top-4 left-4 glass px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary">
+            {products.map((product) => (
+              <div key={product.title} className="glass rounded-xl overflow-hidden group hover:glass-glow transition-all duration-500">
+                <div className="aspect-[3/4] bg-gradient-to-br from-primary/10 to-accent/5 relative overflow-hidden">
+                  <div className="absolute top-4 left-4 z-10 glass px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary">
                     Digital Product
                   </div>
-                  <div className="absolute inset-0 flex items-center justify-center p-8 opacity-40 group-hover:scale-110 transition-transform duration-700">
-                    <ShoppingBag className="w-1/2 h-1/2 text-primary" />
-                  </div>
+                  <Image
+                    src={product.image}
+                    alt={product.title}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">Digital Product {i}</h3>
+                  <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2 min-h-[3.5rem]">
+                    {product.title}
+                  </h3>
                   <div className="flex items-center gap-1 mb-6">
                     <Star className="w-4 h-4 fill-primary text-primary" />
                     <Star className="w-4 h-4 fill-primary text-primary" />
                     <Star className="w-4 h-4 fill-primary text-primary" />
                     <Star className="w-4 h-4 fill-primary text-primary" />
                     <Star className="w-4 h-4 text-primary" />
-                    <span className="text-xs text-muted-foreground ml-2">(12 reviews)</span>
+                    <span className="text-xs text-muted-foreground ml-2">({product.reviews} reviews)</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-black">Free</span>
+                    <span className="text-2xl font-black">{product.price}</span>
                     <Button size="icon" variant="ghost" className="rounded-full h-12 w-12 glass hover:bg-primary hover:text-white group-hover:animate-bounce">
                       <Download className="w-5 h-5" />
                     </Button>
