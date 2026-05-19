@@ -10,13 +10,13 @@ type BookCover = {
 };
 
 const COVERS: BookCover[] = [
-  { src: "/assets/hero/books/1.png", alt: "The AI Content Cash System" },
-  { src: "/assets/hero/books/2.png", alt: "The Ad Profit Machine" },
-  { src: "/assets/hero/books/3.png", alt: "Fast-Selling Mini Offers Collection" },
-  { src: "/assets/hero/books/4.png", alt: "The $10K Sale Engine" },
-  { src: "/assets/hero/books/5.png", alt: "Digital Product Profit System" },
-  { src: "/assets/hero/books/6.png", alt: "The YouTube Free Traffic System" },
-  { src: "/assets/hero/books/7.png", alt: "The Ultimate Digital Product Vault" },
+  { src: "/assets/hero/books/ai-content-cash.png", alt: "The AI Content Cash System" },
+  { src: "/assets/hero/books/ad-profit-machine.png", alt: "The Ad Profit Machine" },
+  { src: "/assets/hero/books/mini-offers.png", alt: "Fast-Selling Mini Offers Collection" },
+  { src: "/assets/hero/books/sale-engine-10k.png", alt: "The $10K Sale Engine" },
+  { src: "/assets/hero/books/profit-system.png", alt: "Digital Product Profit System" },
+  { src: "/assets/hero/books/youtube-traffic.png", alt: "The YouTube Free Traffic System" },
+  { src: "/assets/hero/books/digital-vault.png", alt: "The Ultimate Digital Product Vault" },
 ];
 
 const INTERVAL_MS = 2800;
