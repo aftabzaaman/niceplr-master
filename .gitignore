@@ -6,7 +6,7 @@ dist
 .env.local
 *.log
 docker_data
-temp_versions/
+Previous References/
 I want this as our new header/
 Lets Build Static UI Components first/
 
