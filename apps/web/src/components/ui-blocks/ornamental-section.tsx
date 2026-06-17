@@ -42,7 +42,7 @@ export function OrnamentalSection() {
            {/* The Main Map (img 12.png) */}
            <div className="relative z-10 w-full max-w-6xl lg:max-w-4xl mx-auto px-4 lg:px-0">
               <Image 
-                src="/assets/ornamental/full-map.png" 
+                src="/assets/ornamental/full-map-v2.png" 
                 alt="Process Showcase" 
                 width={1400} 
                 height={1000}

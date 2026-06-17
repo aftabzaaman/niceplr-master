@@ -39,7 +39,7 @@ export function InfoCards() {
   ];
 
   return (
-    <section className="container mx-auto px-6 py-12 -mt-33 relative z-20">
+    <section className="container mx-auto px-6 py-12 mt-[35px] md:mt-[50px] lg:mt-[100px] relative z-20">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, index) => (
           <div 
