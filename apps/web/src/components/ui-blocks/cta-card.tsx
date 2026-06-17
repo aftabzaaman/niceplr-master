@@ -47,42 +47,24 @@ export function CTACard({ transparent = false }: { transparent?: boolean }) {
           </p>
         </div>
 
-        {/* Product Images (Overlapping) */}
-        <div className="absolute -bottom-10 left-10 w-48 md:w-64 hidden lg:block transform hover:-translate-y-4 transition-transform duration-500">
-          <Image 
-            src="/assets/cta/image%2058.png" 
-            alt="Mindful Mornings" 
-            width={300} 
-            height={400} 
+        {/* Product Images — corner positioning, left image behind text */}
+        <div className="absolute -bottom-[65px] sm:-bottom-[100px] lg:-bottom-[125px] left-2 sm:left-4 md:left-8 lg:left-10 w-24 sm:w-32 md:w-48 lg:w-64 transform hover:-translate-y-4 transition-transform duration-500 z-0 opacity-75">
+          <Image
+            src="/assets/cta/cta-1.png"
+            alt="The Ad Profit Machine"
+            width={300}
+            height={400}
             className="rounded-xl shadow-2xl rotate-[-5deg]"
           />
         </div>
-        <div className="absolute -bottom-10 right-10 w-48 md:w-64 hidden lg:block transform hover:-translate-y-4 transition-transform duration-500">
-          <Image 
-            src="/assets/cta/image%2059.png" 
-            alt="Mindfulness for Creators" 
-            width={300} 
-            height={400} 
+        <div className="absolute -bottom-[65px] sm:-bottom-[100px] lg:-bottom-[125px] right-2 sm:right-4 md:right-8 lg:right-10 w-24 sm:w-32 md:w-48 lg:w-64 transform hover:-translate-y-4 transition-transform duration-500 z-10 opacity-75">
+          <Image
+            src="/assets/cta/cta-2.png"
+            alt="The $10K Sale Engine"
+            width={300}
+            height={400}
             className="rounded-xl shadow-2xl rotate-[5deg]"
           />
-        </div>
-
-        {/* Mobile Product Images (Displayed normally) */}
-        <div className="flex lg:hidden gap-4 mt-12 overflow-x-auto pb-0 w-full justify-center -mb-2">
-            <Image 
-              src="/assets/cta/image%2058.png" 
-              alt="Mindful Mornings" 
-              width={150} 
-              height={200} 
-              className="rounded-lg shadow-lg flex-shrink-0"
-            />
-            <Image 
-              src="/assets/cta/image%2059.png" 
-              alt="Mindfulness for Creators" 
-              width={150} 
-              height={200} 
-              className="rounded-lg shadow-lg flex-shrink-0"
-            />
         </div>
       </div>
     </section>

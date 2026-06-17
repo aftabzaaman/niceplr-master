@@ -59,19 +59,6 @@ export function Footer() {
               Nice<span className="bg-linear-to-r from-purple-500 to-blue-400 bg-clip-text text-transparent">PLR</span>
             </Link>
             
-            <div className="space-y-6 text-sm text-gray-400 font-light leading-relaxed">
-              <div className="space-y-1">
-                <p>Amsterdam-oost</p>
-                <p>Batjanstraat 13</p>
-                <p>1094RC Amsterdam</p>
-              </div>
-              
-              <div className="space-y-1">
-                <p>IBAN: NL30INGB0000002002</p>
-                <p>BIC: INGBNL2A</p>
-                <p>KvK: 41211754</p>
-              </div>
-            </div>
           </div>
 
           {/* Column 2: Pages */}

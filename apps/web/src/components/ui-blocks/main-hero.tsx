@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { BookShuffler } from "./book-shuffler";
 
 export function MainHero() {
   return (
@@ -91,15 +92,8 @@ export function MainHero() {
           transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
           className="relative z-20 flex justify-center lg:justify-end items-center"
         >
-          <div className="relative w-full aspect-square max-w-[450px] lg:max-w-none transition-transform duration-700 hover:scale-[1.03]">
-            <Image
-              src="/assets/hero/book_stack.png"
-              alt="Digital Products Stack"
-              width={800}
-              height={800}
-              className="object-contain"
-              priority
-            />
+          <div className="relative w-full max-w-[450px] lg:max-w-none flex items-center justify-center lg:justify-end">
+            <BookShuffler />
           </div>
         </motion.div>
       </div>
