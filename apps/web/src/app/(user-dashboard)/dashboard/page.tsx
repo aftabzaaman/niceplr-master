@@ -1,9 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { UserHeader } from "@/components/ui-blocks/user-header";
 import Image from "next/image";
-import { Play, Download, Lock, CheckCircle, Sparkles, BookOpen, ArrowRight, Bookmark } from "lucide-react";
+import { Play, Download, Lock, CheckCircle, Sparkles, BookOpen, ArrowRight, Loader2, ArrowUpCircle, RefreshCw } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
+
+// Initialize Supabase Client
+const supabase = createClient();
 
 // Mock Data representing different sections
 const MY_LIBRARY = [
@@ -58,7 +62,7 @@ const PREMIUM_PRODUCTS = [
     image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=400",
     category: "Paid Traffic",
     price: "$49",
-    tier: "Pro / Expert",
+    tier: "PRO",
     hasVideo: true,
     id: "prem-1",
   },
@@ -67,7 +71,7 @@ const PREMIUM_PRODUCTS = [
     image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=400",
     category: "Finance & Spreadsheets",
     price: "$29",
-    tier: "Pro",
+    tier: "PRO",
     hasVideo: false,
     id: "prem-2",
   },
@@ -76,7 +80,7 @@ const PREMIUM_PRODUCTS = [
     image: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=400",
     category: "Business Strategy",
     price: "$79",
-    tier: "Expert Only",
+    tier: "EXPERT",
     hasVideo: true,
     id: "prem-3",
   },
@@ -84,10 +88,154 @@ const PREMIUM_PRODUCTS = [
 
 export default function UserDashboardPage() {
   const [activeTab, setActiveTab] = useState("all");
+  const [user, setUser] = useState<any>(null);
+  const [membershipTier, setMembershipTier] = useState<string>("FREE");
+  const [ownedProductIds, setOwnedProductIds] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
+
+  // Fetch Supabase Session, Profile and Purchases
+  const fetchData = async () => {
+    try {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (currentUser) {
+        setUser(currentUser);
+        
+        // Fetch Membership Tier from profiles
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("membership_tier")
+          .eq("id", currentUser.id)
+          .single();
+
+        if (profile && !profileError) {
+          setMembershipTier(profile.membership_tier);
+        }
+
+        // Fetch User Purchases
+        const { data: purchases, error: purchaseError } = await supabase
+          .from("user_purchases")
+          .select("product_id")
+          .eq("user_id", currentUser.id);
+
+        if (purchases && !purchaseError) {
+          setOwnedProductIds(purchases.map((p: any) => p.product_id));
+        }
+      }
+    } catch (e) {
+      console.error("Error fetching user session/data:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Handler to toggle membership tier (Simulation)
+  const handleToggleMembership = async () => {
+    if (!user) return;
+    setActionLoadingId("membership-toggle");
+    
+    const nextTier = membershipTier === "FREE" ? "PRO" : membershipTier === "PRO" ? "EXPERT" : "FREE";
+    
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ membership_tier: nextTier })
+        .eq("id", user.id);
+
+      if (!error) {
+        setMembershipTier(nextTier);
+      } else {
+        alert("SQL Error: Please make sure you have executed the SQL script in your Supabase Dashboard SQL Editor.");
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  // Handler to purchase/unlock a product (Simulation)
+  const handleSimulatePurchase = async (productId: string) => {
+    if (!user) return;
+    setActionLoadingId(productId);
+
+    try {
+      const { error } = await supabase
+        .from("user_purchases")
+        .insert({ user_id: user.id, product_id: productId });
+
+      if (!error) {
+        setOwnedProductIds([...ownedProductIds, productId]);
+      } else if (error.code === "23505") {
+        // Product already purchased (unique violation)
+        alert("You already purchased this product!");
+      } else {
+        alert("SQL Error: Please make sure you have executed the SQL script in your Supabase Dashboard SQL Editor.");
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  // Helper check to verify if user can access a premium product
+  const hasAccessToPremium = (product: typeof PREMIUM_PRODUCTS[0]) => {
+    // Owned explicitly
+    if (ownedProductIds.includes(product.id)) return true;
+    
+    // Expert tier can access both PRO and EXPERT
+    if (membershipTier === "EXPERT") return true;
+    
+    // Pro tier can access PRO products
+    if (membershipTier === "PRO" && product.tier === "PRO") return true;
+    
+    return false;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex h-[80vh] w-full items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto pb-16">
       <UserHeader />
+
+      {/* Simulator Control Bar */}
+      {user && (
+        <section className="mb-6 p-4 bg-yellow-50 border border-yellow-100 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="w-2.5 h-2.5 rounded-full bg-yellow-500 animate-pulse" />
+            <p className="text-xs font-semibold text-slate-700">
+              <span className="font-black text-yellow-800">Simulate Subscriptions:</span> Current tier is{" "}
+              <span className="px-2.5 py-0.5 bg-yellow-100 text-yellow-800 rounded-full font-black text-[10px]">
+                {membershipTier}
+              </span>
+            </p>
+          </div>
+          
+          <button 
+            onClick={handleToggleMembership}
+            disabled={actionLoadingId === "membership-toggle"}
+            className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-yellow-700/50 text-white text-[10px] font-black uppercase tracking-wider rounded-xl transition-colors flex items-center gap-1.5"
+          >
+            {actionLoadingId === "membership-toggle" ? (
+              <Loader2 size={12} className="animate-spin" />
+            ) : (
+              <RefreshCw size={12} />
+            )}
+            Toggle Membership Tier (FREE ➔ PRO ➔ EXPERT)
+          </button>
+        </section>
+      )}
 
       {/* Hero Welcome Banner */}
       <section className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white relative overflow-hidden shadow-xl shadow-blue-950/10">
@@ -96,7 +244,7 @@ export default function UserDashboardPage() {
         <div className="max-w-xl relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-black uppercase tracking-wider mb-6">
             <Sparkles size={12} className="text-yellow-400 fill-yellow-400" />
-            <span>Welcome Back, Creator</span>
+            <span>Welcome, {user?.user_metadata?.full_name || user?.email}</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4 leading-tight">
             Ready to deploy your next digital asset?
@@ -257,50 +405,84 @@ export default function UserDashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {PREMIUM_PRODUCTS.map((item) => (
-            <div 
-              key={item.id} 
-              className="group flex flex-col bg-white rounded-[2rem] border border-slate-100 hover:border-purple-100/50 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_15px_50px_rgba(147,51,234,0.04)] transition-all duration-500 hover:-translate-y-1 relative"
-            >
-              {/* Premium Accent Corner */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-yellow-400/10 to-transparent pointer-events-none rounded-bl-full" />
+          {PREMIUM_PRODUCTS.map((item) => {
+            const isUnlocked = hasAccessToPremium(item);
 
-              <div className="p-6 pb-2">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-black text-purple-500 uppercase tracking-widest bg-purple-50 px-2.5 py-1 rounded-full">
-                    {item.category}
-                  </span>
-                  <span className="text-base font-black text-purple-600 bg-purple-50/50 border border-purple-100/30 px-3 py-0.5 rounded-lg">
-                    {item.price}
-                  </span>
-                </div>
-                <h3 className="text-sm font-black text-slate-800 line-clamp-2 leading-relaxed h-10 mb-4">
-                  {item.title}
-                </h3>
-              </div>
+            return (
+              <div 
+                key={item.id} 
+                className={`group flex flex-col bg-white rounded-[2rem] border overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_15px_50px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-1 relative ${
+                  isUnlocked ? "border-emerald-100 hover:border-emerald-200" : "border-slate-100 hover:border-purple-100/50"
+                }`}
+              >
+                {/* Premium Accent Corner */}
+                <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-transparent pointer-events-none rounded-bl-full ${
+                  isUnlocked ? "from-emerald-400/10" : "from-yellow-400/10"
+                }`} />
 
-              <div className="px-6 relative flex flex-col">
-                <div className="w-full aspect-[4/5] bg-slate-50 rounded-[1.5rem] relative overflow-hidden flex items-center justify-center p-6 group-hover:bg-purple-50/10 transition-colors">
-                  <div className="relative w-[70%] h-[80%] shadow-2xl rounded-sm overflow-hidden transform group-hover:scale-[1.02] transition-transform duration-500 filter grayscale group-hover:grayscale-0">
-                    <Image src={item.image} alt={item.title} fill className="object-cover" />
+                <div className="p-6 pb-2">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-black text-purple-500 uppercase tracking-widest bg-purple-50 px-2.5 py-1 rounded-full">
+                      {item.category}
+                    </span>
+                    {isUnlocked ? (
+                      <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2.5 py-1 rounded-full">
+                        Unlocked
+                      </span>
+                    ) : (
+                      <span className="text-sm font-black text-purple-600 bg-purple-50/50 border border-purple-100/30 px-3 py-0.5 rounded-lg">
+                        {item.price}
+                      </span>
+                    )}
                   </div>
-                  {/* Lock Overlay */}
-                  <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-300">
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-slate-800 shadow-xl">
-                      <Lock size={18} />
+                  <h3 className="text-sm font-black text-slate-800 line-clamp-2 leading-relaxed h-10 mb-4">
+                    {item.title}
+                  </h3>
+                </div>
+
+                <div className="px-6 relative flex flex-col">
+                  <div className="w-full aspect-[4/5] bg-slate-50 rounded-[1.5rem] relative overflow-hidden flex items-center justify-center p-6 group-hover:bg-purple-50/10 transition-colors">
+                    <div className={`relative w-[70%] h-[80%] shadow-2xl rounded-sm overflow-hidden transform group-hover:scale-[1.02] transition-transform duration-500 ${
+                      isUnlocked ? "" : "filter grayscale group-hover:grayscale-0"
+                    }`}>
+                      <Image src={item.image} alt={item.title} fill className="object-cover" />
                     </div>
+                    
+                    {/* Lock Overlay (only show if locked) */}
+                    {!isUnlocked && (
+                      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-300">
+                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-slate-800 shadow-xl">
+                          <Lock size={18} />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
 
-              <div className="p-6 mt-4">
-                <button className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-purple-600/10 active:scale-[0.98] flex items-center justify-center gap-2">
-                  <Lock size={12} />
-                  Unlock Product ({item.tier})
-                </button>
+                <div className="p-6 mt-4">
+                  {isUnlocked ? (
+                    <button className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-emerald-600/10 active:scale-[0.98] flex items-center justify-center gap-2">
+                      <Download size={14} />
+                      Download Resource (Unlocked)
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => handleSimulatePurchase(item.id)}
+                      disabled={actionLoadingId === item.id}
+                      className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-purple-600/10 active:scale-[0.98] flex items-center justify-center gap-2"
+                    >
+                      {actionLoadingId === item.id ? (
+                        <Loader2 size={12} className="animate-spin" />
+                      ) : (
+                        <Lock size={12} />
+                      )}
+                      Unlock Product (Requires {item.tier})
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     </div>
