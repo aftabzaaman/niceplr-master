@@ -48,10 +48,11 @@ export async function signup(prevState: any, formData: FormData) {
   });
 
   if (error) {
-    return { error: error.message };
+    return { error: error.message, success: false, message: "" };
   }
 
   return {
+    error: "",
     success: true,
     message: "Registration successful! Please check your email to verify your account.",
   };
