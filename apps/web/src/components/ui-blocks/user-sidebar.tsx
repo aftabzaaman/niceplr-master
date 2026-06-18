@@ -16,9 +16,11 @@ import {
   AlignLeft, 
   Lightbulb, 
   Type,
-  Menu
+  Menu,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { logout } from "@/app/auth/actions";
 
 export function UserSidebar() {
   const pathname = usePathname();
@@ -99,6 +101,19 @@ export function UserSidebar() {
           </div>
         ))}
       </nav>
+
+      {/* Logout Button */}
+      <div className="mt-auto pt-6 border-t border-slate-100">
+        <form action={logout}>
+          <button 
+            type="submit"
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-red-500 hover:text-red-700 hover:bg-red-50 transition-all duration-200 font-bold"
+          >
+            <LogOut className="w-4 h-4 text-red-400" />
+            <span className="text-sm">Logout</span>
+          </button>
+        </form>
+      </div>
     </aside>
   );
 }

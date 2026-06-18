@@ -1,11 +1,21 @@
 "use client";
 
+import React, { useActionState } from "react";
 import Link from "next/link";
-import { User, Mail, Lock, Chrome, ArrowRight, ArrowLeft } from "lucide-react";
+import { User, Mail, Lock, Chrome, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InfiniteScrollGallery } from "@/components/ui-blocks/infinite-scroll-gallery";
+import { signup } from "@/app/auth/actions";
+
+const initialState = {
+  error: "",
+  success: false,
+  message: "",
+};
 
 export default function SignupPage() {
+  const [state, formAction, isPending] = useActionState(signup, initialState);
+
   return (
     <div className="flex h-screen w-full bg-white overflow-hidden">
       {/* Left Column: Scrolling Visuals (Hidden on small screens) */}
@@ -37,13 +47,27 @@ export default function SignupPage() {
             <p className="text-slate-500 font-medium">Join our community of 10,000+ creators today</p>
           </header>
 
-          <form className="space-y-5">
+          {state?.error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-sm font-medium">
+              {state.error}
+            </div>
+          )}
+
+          {state?.success && state?.message && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-100 text-green-700 rounded-2xl text-sm font-medium">
+              {state.message}
+            </div>
+          )}
+
+          <form action={formAction} className="space-y-5">
              <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 ml-1 uppercase tracking-[0.2em]">Full Name</label>
               <div className="relative group">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-purple-500 transition-colors" />
                 <input 
                   type="text" 
+                  name="fullName"
+                  required
                   placeholder="John Doe" 
                   className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-6 text-slate-900 placeholder:text-slate-300 focus:border-purple-600/30 outline-none transition-all focus:ring-4 focus:ring-purple-600/5 shadow-sm" 
                 />
@@ -56,6 +80,8 @@ export default function SignupPage() {
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-purple-500 transition-colors" />
                 <input 
                   type="email" 
+                  name="email"
+                  required
                   placeholder="name@company.com" 
                   className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-6 text-slate-900 placeholder:text-slate-300 focus:border-purple-600/30 outline-none transition-all focus:ring-4 focus:ring-purple-600/5 shadow-sm" 
                 />
@@ -68,14 +94,27 @@ export default function SignupPage() {
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-purple-500 transition-colors" />
                 <input 
                   type="password" 
+                  name="password"
+                  required
                   placeholder="••••••••" 
                   className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-6 text-slate-900 placeholder:text-slate-300 focus:border-purple-600/30 outline-none transition-all focus:ring-4 focus:ring-purple-600/5 shadow-sm" 
                 />
               </div>
             </div>
 
-            <Button className="w-full py-8 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-black text-lg shadow-xl shadow-purple-600/20 transition-all hover:scale-[1.01] active:scale-[0.98] mt-4">
-              Get Started
+            <Button 
+              type="submit"
+              disabled={isPending}
+              className="w-full py-8 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-black text-lg shadow-xl shadow-purple-600/20 transition-all hover:scale-[1.01] active:scale-[0.98] mt-4 flex items-center justify-center gap-2"
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Creating account...
+                </>
+              ) : (
+                "Get Started"
+              )}
             </Button>
           </form>
 
