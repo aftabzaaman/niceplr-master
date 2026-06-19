@@ -16,7 +16,7 @@
     "prettier": "latest"
   },
   "engines": {
-    "node": ">=18"
+    "node": "20.x"
   },
   "packageManager": "npm@10.2.4"
 }
