@@ -1,4 +1,4 @@
-// Trigger new build for Node 22 LTS config update
+// Trigger new build - final migrations and tables applied
 import type { NextConfig } from "next";
 import { withPayload } from "@payloadcms/next/withPayload";
 
