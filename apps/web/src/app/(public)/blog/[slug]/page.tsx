@@ -7,6 +7,7 @@ import { getPayload } from "payload";
 import config from "@/payload.config";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 60; // Cache and revalidate every 60 seconds
 
 type Props = {
