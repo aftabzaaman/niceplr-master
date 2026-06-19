@@ -1,5 +1,5 @@
 import React from "react";
-import { RootLayout } from "@payloadcms/next/layouts";
+import { RootLayout, handleServerFunctions } from "@payloadcms/next/layouts";
 import { importMap } from "./admin/importMap.js";
 import config from "@/payload.config";
 
@@ -10,7 +10,7 @@ type Args = {
 };
 
 const Layout = ({ children }: Args) => (
-  <RootLayout config={config} importMap={importMap}>
+  <RootLayout config={config} importMap={importMap} serverFunction={handleServerFunctions}>
     {children}
   </RootLayout>
 );
