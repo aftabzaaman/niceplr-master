@@ -9,11 +9,11 @@ type Args = {
 };
 
 export const generateMetadata = ({ params, searchParams }: Args): Promise<Metadata> =>
-  generatePageMetadata({ config, params, searchParams });
+  generatePageMetadata({ config, params, searchParams: searchParams as any });
 
 const Page = async (props: Args) => {
   const { params, searchParams } = props;
-  return <RootPage config={config} params={params} searchParams={searchParams} />;
+  return <RootPage config={config} params={params} searchParams={searchParams as any} />;
 };
 
 export default Page;
