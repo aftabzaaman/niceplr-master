@@ -1,6 +1,6 @@
 import React from "react";
 import { RootLayout, handleServerFunctions } from "@payloadcms/next/layouts";
-import { importMap } from "./admin/importMap.js";
+import { importMap } from "./cms/importMap.js";
 import config from "@/payload.config";
 import type { ServerFunctionClient } from "payload";
 
