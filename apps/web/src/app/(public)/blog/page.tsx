@@ -5,6 +5,7 @@ import { ArrowRight, Sparkles, BookOpen, Clock, Calendar } from "lucide-react";
 import { getPayload } from "payload";
 import config from "@/payload.config";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 60; // Cache and revalidate every 60 seconds
 
 export default async function BlogPage() {
