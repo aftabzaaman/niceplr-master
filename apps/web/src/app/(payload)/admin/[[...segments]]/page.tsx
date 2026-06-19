@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import React from "react";
 import config from "@/payload.config";
 import { RootPage, generatePageMetadata } from "@payloadcms/next/views";
+import { importMap } from "../importMap.js";
 
 type Args = {
   params: Promise<{ segments: string[] }>;
@@ -13,7 +14,7 @@ export const generateMetadata = ({ params, searchParams }: Args): Promise<Metada
 
 const Page = async (props: Args) => {
   const { params, searchParams } = props;
-  return <RootPage config={config} params={params} searchParams={searchParams as any} />;
+  return <RootPage config={config} params={params} searchParams={searchParams as any} importMap={importMap} />;
 };
 
 export default Page;
