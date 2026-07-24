@@ -10,24 +10,25 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@medusajs/medusa-js": "^6.1.10",
+    "@payloadcms/db-postgres": "^3.0.0",
+    "@payloadcms/next": "^3.0.0",
+    "@payloadcms/richtext-lexical": "^3.0.0",
+    "@payloadcms/storage-s3": "^3.0.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.48.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
+    "graphql": "^16.8.1",
     "lucide-react": "^0.577.0",
     "next": "16.2.6",
+    "payload": "^3.0.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "tailwind-merge": "^3.5.0",
-    "payload": "^3.0.0",
-    "@payloadcms/next": "^3.0.0",
-    "@payloadcms/db-postgres": "^3.0.0",
-    "@payloadcms/richtext-lexical": "^3.0.0",
-    "@payloadcms/storage-s3": "^3.0.0",
-    "graphql": "^16.8.1",
-    "sharp": "^0.33.4"
+    "sharp": "^0.33.4",
+    "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
