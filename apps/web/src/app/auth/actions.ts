@@ -22,7 +22,7 @@ export async function login(prevState: any, formData: FormData) {
     return { error: error.message };
   }
 
-  redirect("/app/dashboard");
+  redirect("/dashboard");
 }
 
 export async function signup(prevState: any, formData: FormData) {
