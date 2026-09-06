@@ -19,14 +19,6 @@ const products = getCatalog();
 export default function Home() {
   return (
     <>
-      <section className="bg-yellow-300 text-black text-center py-20 px-6">
-        <h1 className="text-5xl md:text-7xl font-black tracking-tight">
-          🚀 VERCEL AUTO-DEPLOY TEST 🚀
-        </h1>
-        <p className="mt-4 text-2xl font-bold">
-          This is a temporary test section — if you can see this, deployment works!
-        </p>
-      </section>
       <MainHero />
       <InfoCards />
 
