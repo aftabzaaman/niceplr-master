@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { ImageMaskSection } from "@/components/ui-blocks/image-mask-section";
+import { ImageMaskSection } from "@/components/marketing/image-mask-section";
 import { Sparkles } from "lucide-react";
 
 export default function AboutPage() {

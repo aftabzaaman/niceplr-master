@@ -11,7 +11,7 @@ import {
   Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CTACard } from "@/components/ui-blocks/cta-card";
+import { CTACard } from "@/components/marketing/cta-card";
 import { medusa } from "@/lib/medusa";
 
 export default function ProductsPage() {

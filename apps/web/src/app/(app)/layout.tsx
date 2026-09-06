@@ -1,5 +1,5 @@
 import React from "react";
-import { UserSidebar } from "@/components/ui-blocks/user-sidebar";
+import { UserSidebar } from "@/components/app/user-sidebar";
 
 export default function UserDashboardLayout({
   children,

@@ -1,6 +1,6 @@
 import React from "react";
-import { MainHeader } from "@/components/ui-blocks/main-header";
-import { Footer } from "@/components/ui-blocks/footer";
+import { MainHeader } from "@/components/marketing/main-header";
+import { Footer } from "@/components/marketing/footer";
 
 export default function PublicLayout({
   children,

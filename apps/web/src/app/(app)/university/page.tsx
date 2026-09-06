@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { UserHeader } from "@/components/ui-blocks/user-header";
+import { UserHeader } from "@/components/app/user-header";
 import Image from "next/image";
 import { Play, Download, Lock, CheckCircle, Sparkles, BookOpen, ArrowLeft, Loader2, RefreshCw, Clock, Film, Award } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { canAccessCourse } from "@/lib/entitlements";
+import type { Course, MembershipTier } from "@/types";
 
 const supabase = createClient();
 
-const COURSES = [
+const COURSES: Course[] = [
   {
     id: "course-1",
     title: "Digital Product Blueprint (101)",
@@ -81,7 +83,7 @@ const COURSES = [
 
 export default function DigitalProductUniversityPage() {
   const [user, setUser] = useState<any>(null);
-  const [membershipTier, setMembershipTier] = useState<string>("FREE");
+  const [membershipTier, setMembershipTier] = useState<MembershipTier>("FREE");
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [currentLessonIndex, setCurrentLessonIndex] = useState<number>(0);
@@ -140,14 +142,10 @@ export default function DigitalProductUniversityPage() {
   };
 
   // Helper check to verify if user has access to a course
-  const hasAccessToCourse = (course: typeof COURSES[0]) => {
-    if (course.tier === "FREE") return true;
-    if (membershipTier === "EXPERT") return true;
-    if (membershipTier === "PRO" && course.tier === "PRO") return true;
-    return false;
-  };
+  const hasAccessToCourse = (course: Course) =>
+    canAccessCourse(membershipTier, course.tier);
 
-  const handleSelectCourse = (course: typeof COURSES[0]) => {
+  const handleSelectCourse = (course: Course) => {
     if (hasAccessToCourse(course)) {
       setSelectedCourse(course);
       setCurrentLessonIndex(0);

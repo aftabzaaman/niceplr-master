@@ -29,28 +29,28 @@ export function UserSidebar() {
     {
       title: "Master Library",
       items: [
-        { icon: Home, label: "Home", href: "/dashboard" },
-        { icon: PlusCircle, label: "Product Request", href: "/dashboard/request" },
-        { icon: FileText, label: "Samples", href: "/dashboard/samples" },
-        { icon: Bookmark, label: "Saved", href: "/dashboard/saved" },
+        { icon: Home, label: "Home", href: "/app/dashboard" },
+        { icon: PlusCircle, label: "Product Request", href: "/app/request" },
+        { icon: FileText, label: "Samples", href: "/app/samples" },
+        { icon: Bookmark, label: "Saved", href: "/app/saved" },
       ]
     },
     {
       title: "Resources",
       items: [
-        { icon: Percent, label: "Special Deals", href: "/dashboard/deals" },
-        { icon: GraduationCap, label: "Digital Product University", href: "/dashboard/university" },
-        { icon: Layout, label: "Product Mockup", href: "/dashboard/mockup" },
-        { icon: BookOpen, label: "Book Cover", href: "/dashboard/covers" },
+        { icon: Percent, label: "Special Deals", href: "/app/deals" },
+        { icon: GraduationCap, label: "Digital Product University", href: "/app/university" },
+        { icon: Layout, label: "Product Mockup", href: "/app/mockup" },
+        { icon: BookOpen, label: "Book Cover", href: "/app/covers" },
       ]
     },
     {
       title: "Tools",
       items: [
-        { icon: RefreshCw, label: "PDF Rebranded", href: "/dashboard/rebrand" },
-        { icon: AlignLeft, label: "Product Description", href: "/dashboard/description" },
-        { icon: Lightbulb, label: "Product Ideas", href: "/dashboard/ideas" },
-        { icon: Type, label: "Book Title Generator", href: "/dashboard/titles" },
+        { icon: RefreshCw, label: "PDF Rebranded", href: "/app/rebrand" },
+        { icon: AlignLeft, label: "Product Description", href: "/app/description" },
+        { icon: Lightbulb, label: "Product Ideas", href: "/app/ideas" },
+        { icon: Type, label: "Book Title Generator", href: "/app/titles" },
       ]
     }
   ];

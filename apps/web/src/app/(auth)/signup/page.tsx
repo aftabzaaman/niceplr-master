@@ -4,7 +4,7 @@ import React, { useActionState } from "react";
 import Link from "next/link";
 import { User, Mail, Lock, Chrome, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { InfiniteScrollGallery } from "@/components/ui-blocks/infinite-scroll-gallery";
+import { InfiniteScrollGallery } from "@/components/marketing/infinite-scroll-gallery";
 import { signup } from "@/app/auth/actions";
 
 const initialState = {

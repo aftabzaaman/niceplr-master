@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { UserHeader } from "@/components/ui-blocks/user-header";
+import { UserHeader } from "@/components/app/user-header";
 import Image from "next/image";
 import { Play, Download, Lock, CheckCircle, Sparkles, BookOpen, ArrowRight, Loader2, ArrowUpCircle, RefreshCw } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { canAccessProduct } from "@/lib/entitlements";
+import type { MembershipTier } from "@/types";
 
 // Initialize Supabase Client
 const supabase = createClient();
@@ -89,7 +91,7 @@ const PREMIUM_PRODUCTS = [
 export default function UserDashboardPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [user, setUser] = useState<any>(null);
-  const [membershipTier, setMembershipTier] = useState<string>("FREE");
+  const [membershipTier, setMembershipTier] = useState<MembershipTier>("FREE");
   const [ownedProductIds, setOwnedProductIds] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
@@ -184,18 +186,13 @@ export default function UserDashboardPage() {
   };
 
   // Helper check to verify if user can access a premium product
-  const hasAccessToPremium = (product: typeof PREMIUM_PRODUCTS[0]) => {
-    // Owned explicitly
-    if (ownedProductIds.includes(product.id)) return true;
-    
-    // Expert tier can access both PRO and EXPERT
-    if (membershipTier === "EXPERT") return true;
-    
-    // Pro tier can access PRO products
-    if (membershipTier === "PRO" && product.tier === "PRO") return true;
-    
-    return false;
-  };
+  const hasAccessToPremium = (product: typeof PREMIUM_PRODUCTS[0]) =>
+    canAccessProduct(
+      membershipTier,
+      product.tier as MembershipTier,
+      ownedProductIds,
+      product.id
+    );
 
   if (loading) {
     return (

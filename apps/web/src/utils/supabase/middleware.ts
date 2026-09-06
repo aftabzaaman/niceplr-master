@@ -32,7 +32,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isDashboardRoute = request.nextUrl.pathname.startsWith("/dashboard");
+  const isDashboardRoute = request.nextUrl.pathname.startsWith("/app");
   const isAuthRoute =
     request.nextUrl.pathname.startsWith("/login") ||
     request.nextUrl.pathname.startsWith("/signup");
@@ -48,7 +48,7 @@ export async function updateSession(request: NextRequest) {
   if (isAuthRoute) {
     if (user) {
       const url = request.nextUrl.clone();
-      url.pathname = "/dashboard";
+      url.pathname = "/app/dashboard";
       return NextResponse.redirect(url);
     }
   }
