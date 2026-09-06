@@ -32,10 +32,19 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isDashboardRoute = request.nextUrl.pathname.startsWith("/dashboard");
+  const pathname = request.nextUrl.pathname;
+  const isDashboardRoute = pathname.startsWith("/dashboard");
+  const isAdminRoute = pathname.startsWith("/admin");
   const isAuthRoute =
-    request.nextUrl.pathname.startsWith("/login") ||
-    request.nextUrl.pathname.startsWith("/signup");
+    pathname.startsWith("/login") || pathname.startsWith("/signup");
+
+  if (isAuthRoute) {
+    if (user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard";
+      return NextResponse.redirect(url);
+    }
+  }
 
   if (isDashboardRoute) {
     if (!user) {
@@ -45,8 +54,18 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  if (isAuthRoute) {
-    if (user) {
+  if (isAdminRoute) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      return NextResponse.redirect(url);
+    }
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    if (profile?.role !== "admin") {
       const url = request.nextUrl.clone();
       url.pathname = "/dashboard";
       return NextResponse.redirect(url);
