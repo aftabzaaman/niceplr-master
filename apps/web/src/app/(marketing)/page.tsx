@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import {
   Search,
   Download,
-  Star,
 } from "lucide-react";
 import { MainHero } from "@/components/marketing/main-hero";
 import { CTACard } from "@/components/marketing/cta-card";
@@ -12,11 +11,10 @@ import { InfoCards } from "@/components/marketing/info-cards";
 import { BlogSection } from "@/components/marketing/blog-section";
 import { FAQSection } from "@/components/marketing/faq-section";
 import { TestimonialSection } from "@/components/marketing/testimonial-section";
-import { getCatalog } from "@/lib/api/products";
+import { getProducts } from "@/lib/api/products";
 
-const products = getCatalog();
-
-export default function Home() {
+export default async function Home() {
+  const products = await getProducts();
   return (
     <>
       <MainHero />
@@ -45,30 +43,24 @@ export default function Home() {
               <div key={product.title} className="glass rounded-xl overflow-hidden group hover:glass-glow transition-all duration-500">
                 <div className="aspect-[3/4] bg-gradient-to-br from-primary/10 to-accent/5 relative overflow-hidden">
                   <div className="absolute top-3 left-3 z-10 bg-white px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest text-primary shadow-sm">
-                    Digital Product
+                    {product.tier}
                   </div>
-                  <Image
-                    src={product.image}
-                    alt={product.title}
-                    fill
-                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+                  {product.image && (
+                    <Image
+                      src={product.image}
+                      alt={product.title}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  )}
                 </div>
                 <div className="p-4">
                   <h3 className="text-sm font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem]">
                     {product.title}
                   </h3>
-                  <div className="flex items-center gap-0.5 mb-3">
-                    <Star className="w-3 h-3 fill-primary text-primary" />
-                    <Star className="w-3 h-3 fill-primary text-primary" />
-                    <Star className="w-3 h-3 fill-primary text-primary" />
-                    <Star className="w-3 h-3 fill-primary text-primary" />
-                    <Star className="w-3 h-3 text-primary" />
-                    <span className="text-[10px] text-muted-foreground ml-1.5">({product.reviews})</span>
-                  </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-black">{product.price}</span>
+                    <span className="text-lg font-black">{Number(product.price) > 0 ? `$${Number(product.price)}` : "Free"}</span>
                     <Button size="icon" variant="ghost" className="rounded-full h-9 w-9 glass hover:bg-primary hover:text-white group-hover:animate-bounce">
                       <Download className="w-4 h-4" />
                     </Button>
