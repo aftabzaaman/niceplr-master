@@ -58,10 +58,22 @@ export default function UserDashboardPage() {
     if (!user) return;
     setActionLoadingId(productId);
     try {
+      const product = products.find((p) => p.id === productId);
+      const amount = product ? Number(product.price) : 0;
+
       const { error } = await supabase
         .from("user_purchases")
         .insert({ user_id: user.id, product_id: productId });
-      if (!error) setOwnedProductIds([...ownedProductIds, productId]);
+
+      if (!error) {
+        setOwnedProductIds([...ownedProductIds, productId]);
+        await supabase.from("orders").insert({
+          user_id: user.id,
+          user_email: user.email,
+          product_id: productId,
+          amount,
+        });
+      }
     } catch (e) {
       console.error(e);
     } finally {
