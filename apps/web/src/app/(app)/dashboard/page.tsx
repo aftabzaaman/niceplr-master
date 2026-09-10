@@ -10,39 +10,20 @@ import type { MembershipTier } from "@/types";
 
 const supabase = createClient();
 
-const MY_LIBRARY = [
-  {
-    title: "The 6-Day YouTube Accelerator Course",
-    image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=400",
-    category: "Video Course",
-    format: "MP4 Video + PDF",
-    id: "lib-1",
-  },
-  {
-    title: "Mastering Digital Product Mockups & Assets",
-    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=400",
-    category: "Design Kit",
-    format: "Figma + PSD Templates",
-    id: "lib-2",
-  },
-];
-
-const FREE_PRODUCTS = [
-  { title: "100+ High-Converting Hook Templates", image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400", category: "Marketing", format: "PDF Guide", id: "free-1" },
-  { title: "AI Content Creation Prompts Toolkit", image: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=400", category: "AI", format: "Notion Template", id: "free-2" },
-  { title: "No-Code SaaS Landing Page UI Kit", image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=400", category: "SaaS", format: "Figma File", id: "free-3" },
-];
-
-const PREMIUM_PRODUCTS = [
-  { title: "Google Performance Max Campaigns", image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=400", category: "Paid Traffic", price: "$49", tier: "PRO" as MembershipTier, id: "prem-1" },
-  { title: "Multi-Bucket Savings & Finance Blueprint", image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=400", category: "Finance", price: "$29", tier: "PRO" as MembershipTier, id: "prem-2" },
-  { title: "Scaling Your Agency to $10k/Month", image: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=400", category: "Business", price: "$79", tier: "EXPERT" as MembershipTier, id: "prem-3" },
-];
+type Product = {
+  id: string;
+  title: string;
+  category: string | null;
+  tier: string;
+  price: number | string;
+  image: string | null;
+};
 
 export default function UserDashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [membershipTier, setMembershipTier] = useState<MembershipTier>("FREE");
   const [ownedProductIds, setOwnedProductIds] = useState<string[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
@@ -52,20 +33,15 @@ export default function UserDashboardPage() {
       if (currentUser) {
         setUser(currentUser);
 
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("membership_tier")
-          .eq("id", currentUser.id)
-          .single();
+        const [{ data: profile }, { data: purchases }, { data: allProducts }] = await Promise.all([
+          supabase.from("profiles").select("membership_tier").eq("id", currentUser.id).single(),
+          supabase.from("user_purchases").select("product_id").eq("user_id", currentUser.id),
+          supabase.from("products").select("id, title, category, tier, price, image").eq("status", "active").order("created_at"),
+        ]);
 
         if (profile) setMembershipTier(profile.membership_tier);
-
-        const { data: purchases } = await supabase
-          .from("user_purchases")
-          .select("product_id")
-          .eq("user_id", currentUser.id);
-
         if (purchases) setOwnedProductIds(purchases.map((p: any) => p.product_id));
+        if (allProducts) setProducts(allProducts);
       }
     } catch (e) {
       console.error(e);
@@ -93,8 +69,12 @@ export default function UserDashboardPage() {
     }
   };
 
-  const hasAccessToPremium = (product: typeof PREMIUM_PRODUCTS[0]) =>
-    canAccessProduct(membershipTier, product.tier, ownedProductIds, product.id);
+  const owned = products.filter((p) => ownedProductIds.includes(p.id));
+  const free = products.filter((p) => p.tier === "FREE" || Number(p.price) === 0);
+  const premium = products.filter((p) => p.tier !== "FREE" && Number(p.price) > 0);
+
+  const hasAccess = (product: Product) =>
+    canAccessProduct(membershipTier, product.tier as MembershipTier, ownedProductIds, product.id);
 
   if (loading) {
     return (
@@ -125,41 +105,48 @@ export default function UserDashboardPage() {
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-slate-900">My Library</h2>
-          <span className="text-xs text-slate-400">{MY_LIBRARY.length} items</span>
+          <span className="text-xs text-slate-400">{owned.length} items</span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {MY_LIBRARY.map((item) => (
-            <div key={item.id} className="flex bg-white border border-slate-200 rounded-xl overflow-hidden">
-              <div className="w-28 h-28 relative shrink-0 bg-slate-100">
-                <Image src={item.image} alt={item.title} fill className="object-cover" />
-              </div>
-              <div className="flex-1 p-4 flex flex-col justify-between">
-                <div>
-                  <p className="font-medium text-slate-900 text-sm line-clamp-2">{item.title}</p>
-                  <p className="text-xs text-slate-400 mt-1">{item.category} · {item.format}</p>
+        {owned.length === 0 ? (
+          <div className="bg-white border border-slate-200 rounded-xl p-8 text-center">
+            <p className="text-sm text-slate-500">You haven't unlocked any products yet.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {owned.map((item) => (
+              <div key={item.id} className="flex bg-white border border-slate-200 rounded-xl overflow-hidden">
+                <div className="w-28 h-28 relative shrink-0 bg-slate-100">
+                  {item.image ? (
+                    <Image src={item.image} alt={item.title} fill className="object-cover" />
+                  ) : null}
                 </div>
-                <div className="flex items-center gap-2 mt-2 text-xs text-slate-600">
-                  <CheckCircle size={14} />
-                  <span>Owned</span>
+                <div className="flex-1 p-4 flex flex-col justify-between">
+                  <div>
+                    <p className="font-medium text-slate-900 text-sm line-clamp-2">{item.title}</p>
+                    <p className="text-xs text-slate-400 mt-1">{item.category ?? "General"}</p>
+                  </div>
+                  <div className="flex items-center gap-2 mt-2 text-xs text-slate-600">
+                    <CheckCircle size={14} />
+                    <span>Owned</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Free products */}
       <section>
         <h2 className="font-semibold text-slate-900 mb-4">Free products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {FREE_PRODUCTS.map((item) => (
+          {free.map((item) => (
             <div key={item.id} className="bg-white border border-slate-200 rounded-xl p-4">
               <div className="relative w-full aspect-[4/3] bg-slate-100 rounded-lg overflow-hidden mb-3">
-                <Image src={item.image} alt={item.title} fill className="object-cover" />
+                {item.image ? <Image src={item.image} alt={item.title} fill className="object-cover" /> : null}
               </div>
-              <p className="text-xs text-slate-400 font-medium">{item.category}</p>
+              <p className="text-xs text-slate-400 font-medium">{item.category ?? "General"}</p>
               <p className="font-medium text-slate-900 text-sm mt-0.5 line-clamp-2">{item.title}</p>
-              <p className="text-xs text-slate-400 mt-1">{item.format}</p>
               <button className="mt-3 w-full py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-2">
                 <Download size={14} /> Download
               </button>
@@ -172,12 +159,15 @@ export default function UserDashboardPage() {
       <section>
         <h2 className="font-semibold text-slate-900 mb-4">Premium products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {PREMIUM_PRODUCTS.map((item) => {
-            const unlocked = hasAccessToPremium(item);
+          {premium.map((item) => {
+            const unlocked = hasAccess(item);
+            const price = Number(item.price);
             return (
               <div key={item.id} className="bg-white border border-slate-200 rounded-xl p-4">
                 <div className="relative w-full aspect-[4/3] bg-slate-100 rounded-lg overflow-hidden mb-3">
-                  <Image src={item.image} alt={item.title} fill className={`object-cover ${unlocked ? "" : "grayscale"}`} />
+                  {item.image ? (
+                    <Image src={item.image} alt={item.title} fill className={`object-cover ${unlocked ? "" : "grayscale"}`} />
+                  ) : null}
                   {!unlocked && (
                     <div className="absolute inset-0 flex items-center justify-center bg-slate-900/40">
                       <Lock size={24} className="text-white" />
@@ -185,7 +175,7 @@ export default function UserDashboardPage() {
                   )}
                 </div>
                 <div className="flex items-center justify-between">
-                  <p className="text-xs text-slate-400 font-medium">{item.category}</p>
+                  <p className="text-xs text-slate-400 font-medium">{item.category ?? "General"}</p>
                   <span className="text-xs font-medium text-slate-500">{item.tier}</span>
                 </div>
                 <p className="font-medium text-slate-900 text-sm mt-0.5 line-clamp-2">{item.title}</p>
@@ -200,7 +190,7 @@ export default function UserDashboardPage() {
                     className="mt-3 w-full py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-2"
                   >
                     {actionLoadingId === item.id ? <Loader2 size={14} className="animate-spin" /> : <Lock size={14} />}
-                    {item.price} · Unlock
+                    ${price} · Unlock
                   </button>
                 )}
               </div>
