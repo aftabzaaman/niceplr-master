@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 
 type Product = {
@@ -26,9 +27,9 @@ export default async function ProductsPage() {
           <h1 className="text-2xl font-semibold text-slate-900">Products</h1>
           <p className="text-sm text-slate-500 mt-0.5">{list.length} products in catalog.</p>
         </div>
-        <button className="px-4 py-2 bg-black hover:bg-slate-800 text-white rounded-lg text-sm font-medium">
+        <Link href="/admin/products/new" className="px-4 py-2 bg-black hover:bg-slate-800 text-white rounded-lg text-sm font-medium">
           New product
-        </button>
+        </Link>
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
