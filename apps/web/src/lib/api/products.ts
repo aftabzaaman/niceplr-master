@@ -1,3 +1,29 @@
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+export type DbProduct = {
+  id: string;
+  title: string;
+  category: string | null;
+  tier: string;
+  price: number;
+  image: string | null;
+  description: string | null;
+};
+
+export async function getProducts(): Promise<DbProduct[]> {
+  const { data } = await supabase
+    .from("products")
+    .select("id, title, category, tier, price, image, description")
+    .eq("status", "active")
+    .order("created_at");
+  return (data ?? []) as DbProduct[];
+}
+
 export type CatalogItem = {
   title: string;
   image: string;
