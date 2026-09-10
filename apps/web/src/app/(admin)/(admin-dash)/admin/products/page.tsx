@@ -1,18 +1,30 @@
-const products = [
-  { name: "Ultimate PLR Bundle", category: "Business", tier: "PRO", price: "$147", status: "Active" },
-  { name: "Digital Marketing Pro", category: "Marketing", tier: "PRO", price: "$97", status: "Active" },
-  { name: "SaaS Launch Guide", category: "SaaS", tier: "EXPERT", price: "$67", status: "Active" },
-  { name: "Ebook Masterclass", category: "Education", tier: "FREE", price: "$47", status: "Draft" },
-  { name: "AI Content Toolkit", category: "AI", tier: "PRO", price: "$57", status: "Active" },
-];
+import { createClient } from "@/utils/supabase/server";
 
-export default function ProductsPage() {
+type Product = {
+  id: string;
+  title: string;
+  slug: string;
+  category: string | null;
+  tier: string;
+  price: number | string;
+  status: string;
+};
+
+export default async function ProductsPage() {
+  const supabase = await createClient();
+  const { data: products } = await supabase
+    .from("products")
+    .select("id, title, category, tier, price, status")
+    .order("created_at", { ascending: true });
+
+  const list = (products ?? []) as Product[];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-slate-900">Products</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Manage your digital product catalog.</p>
+          <p className="text-sm text-slate-500 mt-0.5">{list.length} products in catalog.</p>
         </div>
         <button className="px-4 py-2 bg-black hover:bg-slate-800 text-white rounded-lg text-sm font-medium">
           New product
@@ -31,19 +43,22 @@ export default function ProductsPage() {
             </tr>
           </thead>
           <tbody>
-            {products.map((p) => (
-              <tr key={p.name} className="border-t border-slate-100 hover:bg-slate-50">
-                <td className="px-4 py-3 font-medium text-slate-900">{p.name}</td>
-                <td className="px-4 py-3 text-slate-500">{p.category}</td>
-                <td className="px-4 py-3 text-slate-500">{p.tier}</td>
-                <td className="px-4 py-3 text-slate-900">{p.price}</td>
-                <td className="px-4 py-3">
-                  <span className={`inline-flex px-2 py-0.5 rounded-md text-xs font-medium ${p.status === "Active" ? "bg-slate-100 text-slate-700" : "bg-slate-50 text-slate-400"}`}>
-                    {p.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
+            {list.map((p) => {
+              const price = Number(p.price);
+              return (
+                <tr key={p.id} className="border-t border-slate-100 hover:bg-slate-50">
+                  <td className="px-4 py-3 font-medium text-slate-900">{p.title}</td>
+                  <td className="px-4 py-3 text-slate-500">{p.category ?? "—"}</td>
+                  <td className="px-4 py-3 text-slate-500">{p.tier}</td>
+                  <td className="px-4 py-3 text-slate-900">{price > 0 ? `$${price}` : "Free"}</td>
+                  <td className="px-4 py-3">
+                    <span className="inline-flex px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700">
+                      {p.status}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
